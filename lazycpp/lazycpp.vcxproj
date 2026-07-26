@@ -129,6 +129,19 @@
   <ItemGroup>
     <ClCompile Include="lazycpp.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="cfs.h" />
+    <ClInclude Include="lazy.h" />
+    <ClInclude Include="lazy_algorithm.h" />
+    <ClInclude Include="lazy_config.h" />
+    <ClInclude Include="lazy_container.h" />
+    <ClInclude Include="lazy_core.h" />
+    <ClInclude Include="lazy_debug.h" />
+    <ClInclude Include="lazy_io.h" />
+    <ClInclude Include="lazy_maths.h" />
+    <ClInclude Include="lazy_random.h" />
+    <ClInclude Include="lazy_string.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

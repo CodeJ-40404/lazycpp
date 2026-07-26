@@ -19,4 +19,39 @@
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="lazy.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="lazy_debug.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="cfs.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="lazy_config.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="lazy_core.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="lazy_algorithm.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="lazy_maths.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="lazy_container.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="lazy_string.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="lazy_io.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="lazy_random.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
 </Project>

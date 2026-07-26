@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="lazycpp/lazycpp.vcxproj" />
+  <Project Path="lazycpp/lazycpp.vcxproj" Id="dcf1bcf2-9c40-4cdd-9039-eee0969d8721" />
 </Solution>

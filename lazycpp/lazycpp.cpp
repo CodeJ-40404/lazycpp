@@ -1,9 +1,38 @@
-ï»¿#include "lazy.h"
-us std;
-us lazy;
+#define LAZY_EXPORT_ALL
+#define LAZY_GLOBAL_EXPORT  // ½« lazy ÃüÃû¿Õ¼äÒ²µ¼ÈëÈ«¾Ö
+#include "lazy.h"
 
-int main()
-{
-    std::cout << "Hello World!\n";
+// ËùÓĞ·ûºÅ¶¼ÔÚÈ«¾ÖÃüÃû¿Õ¼ä
+// Ö»using namespace lazy; ÊÇ×îºÃµÄÕÛÖĞ·½°¸
+
+int main() {
+    fast_io();          // ÒÔÏÂ¶¼ÊÇÈ«¾Ö¿ÉÓÃ
+    log_info("Hello");
+    log_warn("WELCOME TO LAZYCPP!!!!!");
+	log_error("ARE U READY?");
+
+    cr ans = input<cr>("y/n?\n");
+    if (ans == 'y')
+    {
+		outl("HOLD ON...");
+		wait(1000);
+		log_info("Let's go!\n");
+    }
+    else {
+		log_error("Exiting...");
+        return 0;
+    }
+    vi v = { 1, 2, 3 };
+    print(v);
+    // Èç¹û¶à¸ö×ÓÄ£¿éÓĞÍ¬Ãûº¯Êı£¬»áCE
+
+	//½ø¶ÈÌõ
+    ProgressBar pb(100, 50);
+
+    rep (i, 101) {
+        pb.update(i);
+		wait(50);
+    }
+
+    return 0;
 }
-
