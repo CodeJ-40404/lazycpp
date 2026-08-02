@@ -33,6 +33,9 @@
 #include "lazy_string.h"     // lazy::string
 #include "lazy_io.h"         // lazy::io
 #include "lazy_random.h"     // lazy::random
+#include "lazy_structs.h"    // lazy::structs
+#include "lazy_teaching.h"   // lazy::teaching
+#include "lazy_json.h"       // lazy::json
 
 // ========== 便捷宏 ==========
 
@@ -45,7 +48,7 @@
     lazy::io::fast_io(); \
     lazy::debug::init("crash.log")
 
-// ========== 局部导出宏（推荐使用） ==========
+// ========== 局部导出宏 ==========
 
 // 在局部作用域中使用，将所有子命名空间导出到当前作用域
 // 用法：在函数或代码块内使用 LAZY_USE_ALL
@@ -57,14 +60,16 @@
     using namespace lazy::io; \
     using namespace lazy::random; \
     using namespace lazy::algorithm; \
-    using namespace lazy::debug
+    using namespace lazy::debug; \
+    using namespace lazy::structs; \
+    using namespace lazy::teaching;\
+    using namespace lazy::json;
 
 // ========== 全局导出（仅当 LAZY_EXPORT_ALL=1） ==========
 
 #ifdef LAZY_EXPORT_ALL
-    // ?? 警告：将子命名空间导出到 lazy 命名空间
+    // 警告：将子命名空间导出到 lazy 命名空间
     // 这会污染 lazy 命名空间，但不会污染全局命名空间
-    // 用户仍然需要 using namespace lazy 才能获得所有符号
 
 namespace lazy {
     // 从 core 导出
@@ -76,12 +81,15 @@ namespace lazy {
     using namespace random;
     using namespace algorithm;
     using namespace debug;
+    using namespace structs;
+	using namespace teaching;
+	using namespace json;
 }
 
-// 如果你想让所有符号直接在全局可用（极度危险！），可以额外定义：
+// 如果你想让所有符号直接在全局可用，可以额外定义：
 // #define LAZY_GLOBAL_EXPORT
 #ifdef LAZY_GLOBAL_EXPORT
-#pragma message("?? WARNING: LAZY_GLOBAL_EXPORT - global namespace pollution!")
+#pragma message("!WARNING: LAZY_GLOBAL_EXPORT - global namespace pollution!")
 using namespace lazy;
 #endif
 

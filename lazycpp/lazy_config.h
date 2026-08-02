@@ -60,7 +60,8 @@
 // ============================================================
 
 #ifdef LAZY_EXPORT_ALL
-#pragma message("??  LAZY_EXPORT_ALL is enabled - namespace pollution may occur")
+#pragma message("   LAZY_EXPORT_ALL is enabled - namespace pollution may occur")
 #pragma message("   Use LAZY_USE_ALL for local scope instead if possible")
 #pragma message("   Define LAZY_EXPORT_ALL=0 to disable")
+#pragma message("   See https://github.com/CodeJ-40404/lazycpp for more details")
 #endif

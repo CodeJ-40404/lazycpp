@@ -187,9 +187,9 @@ namespace lazy {
         template<typename... Args>
         void log_success(Args&&... args) {
 #ifdef _WIN32
-            println_color(10, "[OK] ", std::forward<Args>(args)...);
+            println_color(10, "[SUCCESS] ", std::forward<Args>(args)...);
 #else
-            println_color(color::GREEN, "[OK] ", std::forward<Args>(args)...);
+            println_color(color::GREEN, "[SUCCESS] ", std::forward<Args>(args)...);
 #endif
         }
 
@@ -262,7 +262,7 @@ namespace lazy {
             T val;
             while (!(std::cin >> val)) {
                 std::cin.clear();
-                std::cin.ignore(9223372036854775807i64, '\n');
+                std::cin.ignore(LLONG_MAX, '\n');
                 std::cout << "Invalid input. Please try again: ";
             }
             return val;
@@ -280,7 +280,6 @@ namespace lazy {
     } // namespace io
 
     //using namespace io;
-    //²»¹æ·¶
 #ifdef LAZY_EXPORT_ALL
     using namespace io;
 #endif

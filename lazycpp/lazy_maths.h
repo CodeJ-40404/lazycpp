@@ -638,6 +638,7 @@ namespace lazy {
         // 13. 随机数
         // ============================================================
 
+		// lazy_random有更好的实现，建议使用lazy_random
         inline int randint(int min, int max) {
             static std::mt19937 gen(
                 (unsigned)std::chrono::steady_clock::now().time_since_epoch().count()

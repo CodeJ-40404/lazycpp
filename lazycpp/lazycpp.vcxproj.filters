@@ -18,6 +18,9 @@
     <ClCompile Include="lazycpp.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="lazy_structs.h">
+      <Filter>头文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lazy.h">
@@ -51,6 +54,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="lazy_random.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="lazy_teaching.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="lazy_json.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
