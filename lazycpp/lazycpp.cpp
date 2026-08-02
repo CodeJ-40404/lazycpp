@@ -1,679 +1,222 @@
-#define NOMINMA
-#ifdef min
-#undef min
-#endif
-#ifdef max
-#undef max
-#endif
-
-#define LAZY_EXPORT_ALL
+ï»¿// example.cpp
 #include "lazy.h"
 
-// again!!!
-#ifdef min
-#undef min
-#endif
-#ifdef max
-#undef max
-#endif
-
-// ============================================================
-// ¸¨Öúº¯Êı£ºÇåÆÁºÍÔİÍ£
-// ============================================================
-void clear_screen() {
-#ifdef _WIN32
-    system("cls");
-#else
-    system("clear");
-#endif
-}
-
-void wait_for_enter(const std::string& msg = "°´ Enter ¼ü¼ÌĞø...") {
-    lazy::io::log_info(msg);
-    std::cin.get();
-}
+using namespace lazy::json;
 
 int main() {
-    // ============================================================
-    // 1. ³õÊ¼»¯
-    // ============================================================
-    LAZY_INIT();
-    clear_screen();
+    std::cout << "========== JSON åº“ä½¿ç”¨ç¤ºä¾‹ ==========\n\n";
 
     // ============================================================
-    // 2. ºËĞÄ¹¦ÄÜ (lazy::core)
+    // 1. åˆ›å»º JSON å¯¹è±¡
     // ============================================================
-    lazy::io::title("LAZYCPP ¹¦ÄÜÑİÊ¾", '=', 60);
-    lazy::outl();
-    lazy::io::log_info("°æ±¾: ", LAZY_VERSION_MAJOR, ".", LAZY_VERSION_MINOR, ".", LAZY_VERSION_PATCH);
-    lazy::outl();
+    std::cout << "1. åˆ›å»º JSON å¯¹è±¡:\n";
 
-    lazy::vi numbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-    lazy::vstr names = { "ÕÅÈı", "ÀîËÄ", "ÍõÎå" };
-    lazy::msi age_map = { {"ÕÅÈı", 25}, {"ÀîËÄ", 30}, {"ÍõÎå", 35} };
-
-    lazy::outl("ºËĞÄÀàĞÍÑİÊ¾:");
-    lazy::outl("  Êı×ÖÊı×é: ");
-    for (auto x : numbers) lazy::out(x, " ");
-    lazy::outl();
-    lazy::outl("  ĞÕÃûÁĞ±í: ", lazy::string::join(names, ", "));
-    lazy::outl("  ÕÅÈıµÄÄêÁä: ", age_map["ÕÅÈı"]);
-    lazy::outl();
-
-    lazy::outl("³£Á¿:");
-    lazy::outl("  PI = ", lazy::core::PI);
-    lazy::outl("  INF = ", lazy::core::INF);
-    lazy::outl("  MOD = ", lazy::core::MOD);
-    lazy::outl();
-
-    lazy::outl("¼ÆÊ±Æ÷ÑİÊ¾:");
-    {
-        lazy::core::Timer t("Ñ­»·¼ÆÊ±");
-        int sum = 0;
-        for (int i = 0; i < 1000000; i++) sum += i;
-        lazy::outl("  ÀÛ¼ÓºÍ = ", sum);
-    }
-    lazy::outl();
-
-    wait_for_enter();
-
-    // ============================================================
-    // 3. ÊıÑ§¹¦ÄÜ (lazy::maths)
-    // ============================================================
-    clear_screen();
-    lazy::io::title("ÊıÑ§¹¦ÄÜÑİÊ¾", '=', 60);
-    lazy::outl();
-
-    lazy::io::log_info("»ù´¡ÊıÑ§:");
-    lazy::outl("  GCD(48, 18) = ", lazy::maths::gcd(48, 18));
-    lazy::outl("  LCM(12, 18) = ", lazy::maths::lcm(12, 18));
-    lazy::outl("  2^10 = ", lazy::maths::mod_pow(2, 10, 1000000007));
-    lazy::outl("  sqrt(2) = ", std::sqrt(2.0));
-    lazy::outl();
-
-    lazy::io::log_info("Ä£ÔËËã:");
-    lazy::outl("  2^10 mod 100 = ", lazy::maths::mod_pow(2, 10, 100));
-    lazy::outl("  3^5 mod 7 = ", lazy::maths::mod_pow(3, 5, 7));
-    lazy::outl("  5 mod 3 = ", lazy::maths::mod_norm(5, 3));
-    lazy::outl("  -5 mod 3 = ", lazy::maths::mod_norm(-5, 3));
-    lazy::outl();
-
-    lazy::io::log_info("ËØÊı:");
-    lazy::outl("  17 ÊÇËØÊı? ", lazy::maths::is_prime(17));
-    lazy::outl("  100 ÊÇËØÊı? ", lazy::maths::is_prime(100));
-    lazy::outl("  20 ÒÔÄÚµÄËØÊı: ");
-    auto primes = lazy::maths::prime_list(20);
-    for (auto p : primes) lazy::out(p, " ");
-    lazy::outl();
-    lazy::outl();
-
-    lazy::io::log_info("ÒòÊı·Ö½â 84:");
-    auto factors = lazy::maths::prime_factorize(84);
-    for (auto [p, e] : factors) {
-        lazy::outl("  ", p, "^", e);
-    }
-    lazy::outl("  Ô¼Êı¸öÊı: ", lazy::maths::divisor_count(84));
-    auto divs = lazy::maths::divisors(84);
-    lazy::outl("  ËùÓĞÔ¼Êı: ");
-    for (auto d : divs) lazy::out(d, " ");
-    lazy::outl();
-    lazy::outl();
-
-    lazy::io::log_info("×éºÏÊıÑ§:");
-    lazy::outl("  C(10, 3) = ", lazy::maths::comb_small(10, 3));
-    lazy::outl("  P(10, 3) = ", lazy::maths::perm(10, 3));
-    lazy::outl("  5! = ", lazy::maths::factorial(5));
-
-    lazy::maths::CombMod comb_mod(20);
-    lazy::outl("  C(10, 3) mod 1e9+7 = ", comb_mod.comb(10, 3));
-    lazy::outl();
-
-    lazy::io::log_info("ì³²¨ÄÇÆõÊıÁĞ:");
-    lazy::outl("  F(10) = ", lazy::maths::fib_iter(10));
-    lazy::outl("  F(20) = ", lazy::maths::fib_matrix(20));
-    lazy::outl("  F(20) mod 100 = ", lazy::maths::fib_matrix(20, 100));
-    lazy::outl();
-
-    lazy::io::log_info("½øÖÆ×ª»»:");
-    lazy::outl("  255 ×ªÊ®Áù½øÖÆ = ", lazy::maths::to_base(255, 16));
-    lazy::outl("  FF ×ªÊ®½øÖÆ = ", lazy::maths::from_base("FF", 16));
-    lazy::outl("  42 ×ª¶ş½øÖÆ = ", lazy::maths::to_base(42, 2));
-    lazy::outl();
-
-    lazy::io::log_info("¾ØÕóÔËËã:");
-    lazy::maths::Matrix<int> A({ {1, 2}, {3, 4} });
-    lazy::maths::Matrix<int> B({ {5, 6}, {7, 8} });
-    lazy::outl("  A = ");
-    A.print();
-    lazy::outl("  B = ");
-    B.print();
-    auto C = A * B;
-    lazy::outl("  A * B = ");
-    C.print();
-    lazy::outl("  A^3 = ");
-    auto Apow = A.pow(3);
-    Apow.print();
-    lazy::outl();
-
-    lazy::io::log_info("ÏßĞÔ´úÊı:");
-    std::vector<double> vec1 = { 1.0, 2.0, 3.0 };
-    std::vector<double> vec2 = { 4.0, 5.0, 6.0 };
-    lazy::outl("  dot(vec1, vec2) = ", lazy::maths::dot(vec1, vec2));
-    lazy::outl("  norm(vec1) = ", lazy::maths::norm(vec1));
-    lazy::outl();
-
-    lazy::io::log_info("Ëæ»úÊı:");
-    lazy::outl("  [1, 10] Ëæ»úÕûÊı: ", lazy::maths::randint(1, 10));
-    lazy::outl("  [0, 1] Ëæ»ú¸¡µãÊı: ", lazy::maths::randdouble(0, 1));
-    lazy::outl();
-
-    wait_for_enter();
-
-    // ============================================================
-    // 4. Ëã·¨¹¦ÄÜ (lazy::algorithm)
-    // ============================================================
-    clear_screen();
-    lazy::io::title("Ëã·¨¹¦ÄÜÑİÊ¾", '=', 60);
-    lazy::outl();
-
-    std::vector<int> arr = { 5, 2, 8, 1, 9, 3, 7, 4, 6 };
-    lazy::io::log_info("Ô­Ê¼Êı×é:");
-    for (auto x : arr) lazy::out(x, " ");
-    lazy::outl();
-
-    auto arr_copy = arr;
-    lazy::algorithm::quick_sort(arr_copy);
-    lazy::io::log_success("¿ìËÙÅÅĞò½á¹û:");
-    for (auto x : arr_copy) lazy::out(x, " ");
-    lazy::outl();
-
-    lazy::io::log_info("¶ş·Ö²éÕÒ:");
-    lazy::outl("  lower_bound(5) = ", lazy::algorithm::lower_bound(arr_copy, 5));
-    lazy::outl("  upper_bound(5) = ", lazy::algorithm::upper_bound(arr_copy, 5));
-    lazy::outl("  first_equal(5) = ", lazy::algorithm::first_equal(arr_copy, 5));
-    lazy::outl("  last_equal(5) = ", lazy::algorithm::last_equal(arr_copy, 5));
-    lazy::outl("  linear_search(9) = ", lazy::algorithm::linear_search(arr_copy, 9));
-    lazy::outl();
-
-    std::vector<int> kadane_arr = { -2, 1, -3, 4, -1, 2, 1, -5, 4 };
-    lazy::io::log_info("Kadane ×î´ó×ÓÊı×éºÍ:");
-    lazy::outl("  ×î´ó×ÓÊı×éºÍ = ", lazy::algorithm::max_subarray_sum(kadane_arr));
-    auto [l, r] = lazy::algorithm::max_subarray_range(kadane_arr);
-    lazy::outl("  Çø¼ä: [", l, ", ", r, "]");
-    lazy::outl();
-
-    std::vector<int> lis_arr = { 10, 22, 9, 33, 21, 50, 41, 60 };
-    auto lis = lazy::algorithm::longest_increasing_subsequence(lis_arr);
-    lazy::io::log_info("×î³¤µİÔö×ÓĞòÁĞ (LIS):");
-    for (auto x : lis) lazy::out(x, " ");
-    lazy::outl();
-    lazy::outl("  LIS ³¤¶È = ", lazy::algorithm::lis_length(lis_arr));
-    lazy::outl();
-
-    std::vector<int> lcs_a = { 1, 2, 3, 4, 5 };
-    std::vector<int> lcs_b = { 2, 3, 4, 6, 7 };
-    auto lcs = lazy::algorithm::longest_common_subsequence(lcs_a, lcs_b);
-    lazy::io::log_info("×î³¤¹«¹²×ÓĞòÁĞ (LCS):");
-    lazy::outl("  {1,2,3,4,5} Óë {2,3,4,6,7} µÄ LCS:");
-    for (auto x : lcs) lazy::out(x, " ");
-    lazy::outl();
-    lazy::outl();
-
-    std::vector<int> window_arr = { 1, 3, -1, -3, 5, 3, 6, 7 };
-    auto max_window = lazy::algorithm::sliding_window_max(window_arr, 3);
-    lazy::io::log_info("»¬¶¯´°¿Ú×î´óÖµ (k=3):");
-    for (auto x : max_window) lazy::out(x, " ");
-    lazy::outl();
-    lazy::outl();
-
-    std::vector<int> perm_arr = { 1, 2, 3 };
-    auto perms = lazy::algorithm::all_permutations(perm_arr);
-    lazy::io::log_info("{1,2,3} µÄËùÓĞÅÅÁĞ:");
-    for (const auto& p : perms) {
-        for (auto x : p) lazy::out(x, " ");
-        lazy::outl();
-    }
-    lazy::outl();
-
-    auto combos = lazy::algorithm::all_combinations(perm_arr, 2);
-    lazy::io::log_info("{1,2,3} µÄËùÓĞ×éºÏ (´óĞ¡ 2):");
-    for (const auto& c : combos) {
-        for (auto x : c) lazy::out(x, " ");
-        lazy::outl();
-    }
-    lazy::outl();
-
-    std::vector<int> set_a = { 1, 2, 3, 4, 5 };
-    std::vector<int> set_b = { 4, 5, 6, 7, 8 };
-    auto intersection = lazy::algorithm::set_intersection(set_a, set_b);
-    auto union_set = lazy::algorithm::set_union(set_a, set_b);
-    lazy::io::log_info("¼¯ºÏ²Ù×÷:");
-    lazy::outl("  A = {1,2,3,4,5}, B = {4,5,6,7,8}");
-    lazy::outl("  ½»¼¯: ");
-    for (auto x : intersection) lazy::out(x, " ");
-    lazy::outl();
-    lazy::outl("  ²¢¼¯: ");
-    for (auto x : union_set) lazy::out(x, " ");
-    lazy::outl();
-    lazy::outl("  A ÊÇ B µÄ×Ó¼¯? ", lazy::algorithm::is_subset(set_a, set_b));
-    lazy::outl();
-
-    std::unordered_map<int, std::vector<int>> graph = {
-        {1, {2, 3}},
-        {2, {4, 5}},
-        {3, {6}},
-        {4, {}},
-        {5, {}},
-        {6, {}}
+    Json user = {
+        {"name", "å¼ ä¸‰"},
+        {"age", 25},
+        {"active", true},
+        {"scores", Json::array()}  // ç©ºæ•°ç»„
     };
-    auto bfs_result = lazy::algorithm::bfs(graph, 1);
-    lazy::io::log_info("´Ó 1 ¿ªÊ¼µÄ BFS:");
-    for (auto x : bfs_result) lazy::out(x, " ");
-    lazy::outl();
-    lazy::outl();
 
-    std::vector<int> two_sum_arr = { 2, 7, 11, 15 };
-    auto pair = lazy::algorithm::two_sum(two_sum_arr, 9);
-    lazy::io::log_info("Á½ÊıÖ®ºÍ (Ä¿±ê=9): Ë÷Òı (", pair.first, ", ", pair.second, ")");
-    lazy::outl();
+    // æ·»åŠ æ•°ç»„å…ƒç´ 
+    user["scores"].push_back(95);
+    user["scores"].push_back(87);
+    user["scores"].push_back(92);
 
-    lazy::io::log_info("Î»ÔËËã:");
-    lazy::outl("  popcount(0b1010) = ", lazy::algorithm::popcount((unsigned int)0b1010));
-    lazy::outl("  is_power_of_two(16) = ", lazy::algorithm::is_power_of_two(16));
-    lazy::outl("  lowbit(12) = ", lazy::algorithm::lowbit(12));
-    lazy::outl("  lowbit_pos(12) = ", lazy::algorithm::lowbit_pos((unsigned int)12));
-    lazy::outl("  highbit_pos(12) = ", lazy::algorithm::highbit_pos((unsigned int)12));
-    lazy::outl();
+    // åµŒå¥—å¯¹è±¡
+    user["address"] = Json{
+        {"city", "åŒ—äº¬"},
+        {"district", "æµ·æ·€"}
+    };
 
-    std::vector<double> stats_arr = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0 };
-    lazy::io::log_info("Í³¼ÆÁ¿:");
-    lazy::outl("  Æ½¾ùÖµ = ", lazy::algorithm::mean(stats_arr));
-    lazy::outl("  ÖĞÎ»Êı = ", lazy::algorithm::median(stats_arr));
-    lazy::outl("  ·½²î = ", lazy::algorithm::variance(stats_arr));
-    lazy::outl("  ±ê×¼²î = ", lazy::algorithm::stddev(stats_arr));
-    lazy::outl();
-
-    lazy::io::log_info("KMP ×Ö·û´®ËÑË÷:");
-    auto kmp_result = lazy::algorithm::kmp_search("ABABDABACDABABCABAB", "ABABCABAB");
-    lazy::outl("  Ä£Ê½´®³öÏÖÎ»ÖÃ: ");
-    for (auto pos : kmp_result) lazy::out(pos, " ");
-    lazy::outl();
-    lazy::outl("  ÊÇ·ñÎª×Ó´®? ", lazy::algorithm::is_substring("hello world", "world"));
-    lazy::outl();
-
-    wait_for_enter();
+    std::cout << user.dump(true) << "\n\n";
 
     // ============================================================
-    // 5. ×Ö·û´®¹¦ÄÜ (lazy::string)
+    // 2. è®¿é—® JSON æ•°æ®
     // ============================================================
-    clear_screen();
-    lazy::io::title("×Ö·û´®¹¦ÄÜÑİÊ¾", '=', 60);
-    lazy::outl();
+    std::cout << "2. è®¿é—®æ•°æ®:\n";
 
-    std::string str = "  ÄãºÃ£¬ÊÀ½ç£¡  ";
-    lazy::io::log_info("Ô­Ê¼×Ö·û´®: \"", str, "\"");
-    lazy::outl("  trim: \"", lazy::string::trim(str), "\"");
-    lazy::outl("  ×ªĞ¡Ğ´: \"", lazy::string::to_lower(str), "\"");
-    lazy::outl("  ×ª´óĞ´: \"", lazy::string::to_upper(str), "\"");
-    lazy::outl("  Ê××ÖÄ¸´óĞ´: \"", lazy::string::capitalize("hello"), "\"");
-    lazy::outl("  ±êÌâ¸ñÊ½: \"", lazy::string::title_case("hello world"), "\"");
-    lazy::outl();
+    std::string name = user["name"].as_string();
+    int age = user["age"].as_int();
+    bool active = user["active"].as_bool();
+    double first_score = user["scores"][0].as_number();
+    std::string city = user["address"]["city"].as_string();
 
-    std::string csv = "Æ»¹û,Ïã½¶,³È×Ó,ÆÏÌÑ";
-    auto parts = lazy::string::split(csv, ",");
-    lazy::io::log_info("·Ö¸î \"" + csv + "\":");
-    for (const auto& p : parts) lazy::outl("  ", p);
-    lazy::outl("  Á¬½Ó: \"", lazy::string::join(parts, " | "), "\"");
-    lazy::outl();
-
-    lazy::outl("  °üº¬ \"ÊÀ½ç\": ", lazy::string::contains(str, "ÊÀ½ç"));
-    lazy::outl("  ÒÔ \"ÄãºÃ\" ¿ªÍ·: ", lazy::string::starts_with(str, "ÄãºÃ"));
-    lazy::outl("  ÒÔ \"ÊÀ½ç£¡\" ½áÎ²: ", lazy::string::ends_with(str, "ÊÀ½ç£¡"));
-    lazy::outl("  Ìæ»»È«²¿: ", lazy::string::replace_all("ÄãºÃ ÄãºÃ ÄãºÃ", "ÄãºÃ", "àË"));
-    lazy::outl();
-
-    lazy::io::log_info("ÑéÖ¤:");
-    lazy::outl("  is_number(\"123.45\") = ", lazy::string::is_number("123.45"));
-    lazy::outl("  is_number(\"abc\") = ", lazy::string::is_number("abc"));
-    lazy::outl("  is_integer(\"-123\") = ", lazy::string::is_integer("-123"));
-    lazy::outl("  is_alpha(\"Hello\") = ", lazy::string::is_alpha("Hello"));
-    lazy::outl("  is_alnum(\"Hello123\") = ", lazy::string::is_alnum("Hello123"));
-    lazy::outl();
-
-    lazy::outl("  ¸ñÊ½»¯: ", lazy::string::format("ÄãºÃ {0}£¬ÄêÁä {1}", "Ğ¡Ã÷", 18));
-    lazy::outl();
-
-    lazy::io::log_info("Ìî³ä:");
-    lazy::outl("  pad_left: \"", lazy::string::pad_left("42", 5, '0'), "\"");
-    lazy::outl("  pad_right: \"", lazy::string::pad_right("42", 5, '0'), "\"");
-    lazy::outl("  pad_center: \"", lazy::string::pad_center("42", 5, ' '), "\"");
-    lazy::outl();
-
-    lazy::outl("  Ëæ»ú×Ö·û´®: ", lazy::string::random_string(10));
-    lazy::outl("  Ëæ»úÊı×Ö: ", lazy::string::random_string(8, "0123456789"));
-    lazy::outl();
-
-    wait_for_enter();
+    std::cout << "å§“å: " << name << "\n";
+    std::cout << "å¹´é¾„: " << age << "\n";
+    std::cout << "æ´»è·ƒ: " << (active ? "æ˜¯" : "å¦") << "\n";
+    std::cout << "ç¬¬ä¸€ç§‘æˆç»©: " << first_score << "\n";
+    std::cout << "åŸå¸‚: " << city << "\n\n";
 
     // ============================================================
-    // 6. ÈİÆ÷¹¦ÄÜ (lazy::container)
+    // 3. å®‰å…¨è®¿é—®
     // ============================================================
-    clear_screen();
-    lazy::io::title("ÈİÆ÷¹¦ÄÜÑİÊ¾", '=', 60);
-    lazy::outl();
+    std::cout << "3. å®‰å…¨è®¿é—®:\n";
 
-    std::vector<int> vec = { 1, 2, 3, 4, 5, 3, 6, 7, 3 };
-    lazy::io::log_info("ÏòÁ¿:");
-    for (auto x : vec) lazy::out(x, " ");
-    lazy::outl();
-    lazy::outl("  contains(5): ", lazy::container::contains(vec, 5));
-    lazy::outl("  index_of(3): ", lazy::container::index_of(vec, 3));
-    lazy::outl("  remove_first(3): ", lazy::container::remove_first(vec, 3));
-    lazy::outl("  É¾³ıµÚÒ»¸ö 3 ºó: ");
-    for (auto x : vec) lazy::out(x, " ");
-    lazy::outl();
-    lazy::outl("  slice(2, 5): ");
-    auto sliced = lazy::container::slice(vec, 2, 5);
-    for (auto x : sliced) lazy::out(x, " ");
-    lazy::outl();
-    lazy::outl("  is_sorted: ", lazy::container::is_sorted(vec));
-    lazy::outl();
+    // å¦‚æœé”®ä¸å­˜åœ¨ï¼Œè¿”å›é»˜è®¤å€¼
+    std::string email = user["email"].get_string("æœªè®¾ç½®");
+    bool admin = user["admin"].get_bool(false);
 
-    std::map<std::string, int> m = { {"a", 1}, {"b", 2}, {"c", 3} };
-    lazy::io::log_info("Map:");
-    for (const auto& [k, v] : m) lazy::out(k, ":", v, " ");
-    lazy::outl();
-    lazy::outl("  get_or_default(\"b\", 0): ", lazy::container::get_or_default<std::string, int>(m, "b", 0));
-    lazy::outl("  get_or_default(\"d\", 0): ", lazy::container::get_or_default<std::string, int>(m, "d", 0));
-    lazy::outl("  contains_key(\"c\"): ", lazy::container::contains_key<std::string, int>(m, "c"));
-    lazy::outl("  ËùÓĞ¼ü: ");
-    for (auto k : lazy::container::keys(m)) lazy::out(k, " ");
-    lazy::outl();
-    lazy::outl("  ËùÓĞÖµ: ");
-    for (auto v : lazy::container::values(m)) lazy::out(v, " ");
-    lazy::outl();
-    lazy::outl();
+    std::cout << "é‚®ç®±: " << email << "\n";
+    std::cout << "ç®¡ç†å‘˜: " << (admin ? "æ˜¯" : "å¦") << "\n\n";
 
-    std::set<int> s1 = { 1, 2, 3, 4, 5 };
-    std::set<int> s2 = { 4, 5, 6, 7, 8 };
-    auto inter = lazy::container::intersect(s1, s2);
-    auto uni = lazy::container::unite(s1, s2);
-    lazy::io::log_info("¼¯ºÏ²Ù×÷:");
-    lazy::outl("  ½»¼¯: ");
-    for (auto x : inter) lazy::out(x, " ");
-    lazy::outl();
-    lazy::outl("  ²¢¼¯: ");
-    for (auto x : uni) lazy::out(x, " ");
-    lazy::outl();
-    lazy::outl();
-
-    lazy::container::BiMap<std::string, int, std::string> bimap;
-    bimap.insert("user1", 1001, "ÕÅÈı");
-    bimap.insert("user2", 1002, "ÀîËÄ");
-    lazy::io::log_info("Ë«ÏòÓ³Éä (BiMap):");
-    lazy::outl("  get_by_key1(\"user1\"): ", bimap.get_by_key1("user1"));
-    lazy::outl("  get_by_key2(1002): ", bimap.get_by_key2(1002));
-    auto keys = bimap.get_keys_by_value("ÕÅÈı");
-    lazy::outl("  get_keys_by_value(\"ÕÅÈı\"): (", keys.first, ", ", keys.second, ")");
-    lazy::outl("  ´óĞ¡: ", bimap.size());
-    lazy::outl();
-
-    wait_for_enter();
-
-    // ============================================================
-    // 7. IO ¹¦ÄÜ (lazy::io) - ²ÊÉ«Êä³öÑİÊ¾
-    // ============================================================
-    clear_screen();
-    lazy::io::title("²ÊÉ«Êä³öÑİÊ¾", '=', 60);
-    lazy::outl();
-
-    lazy::io::log_info("ÕâÊÇÒ»ÌõĞÅÏ¢ÈÕÖ¾");
-    lazy::io::log_warn("ÕâÊÇÒ»Ìõ¾¯¸æÈÕÖ¾");
-    lazy::io::log_error("ÕâÊÇÒ»Ìõ´íÎóÈÕÖ¾");
-    lazy::io::log_success("ÕâÊÇÒ»Ìõ³É¹¦ÈÕÖ¾");
-    lazy::outl();
-
-    // Ê¹ÓÃ print_color ×Ô¶¨ÒåÑÕÉ«
-    lazy::io::separator('-', 50);
-    lazy::outl();
-
-#ifdef _WIN32
-    lazy::io::print_color(lazy::io::BLUE, "À¶É«ÎÄ×Ö ");
-    lazy::io::print_color(lazy::io::GREEN, "ÂÌÉ«ÎÄ×Ö ");
-    lazy::io::print_color(lazy::io::RED, "ºìÉ«ÎÄ×Ö ");
-    lazy::io::print_color(lazy::io::YELLOW, "»ÆÉ«ÎÄ×Ö ");
-    lazy::io::println_color(lazy::io::WHITE, "°×É«ÎÄ×Ö");
-#else
-    lazy::io::print_color(lazy::io::color::BLUE, "À¶É«ÎÄ×Ö ");
-    lazy::io::print_color(lazy::io::color::GREEN, "ÂÌÉ«ÎÄ×Ö ");
-    lazy::io::print_color(lazy::io::color::RED, "ºìÉ«ÎÄ×Ö ");
-    lazy::io::print_color(lazy::io::color::YELLOW, "»ÆÉ«ÎÄ×Ö ");
-    lazy::io::println_color(lazy::io::color::WHITE, "°×É«ÎÄ×Ö");
-#endif
-    lazy::outl();
-
-    lazy::io::title("½ø¶ÈÌõÑİÊ¾", '-', 50);
-    lazy::io::ProgressBar pb(100, 40);
-    for (int i = 0; i <= 100; i += 5) {
-        pb.update(i);
-        std::this_thread::sleep_for(std::chrono::milliseconds(30));
+    // ä½¿ç”¨ find() æ£€æŸ¥æ˜¯å¦å­˜åœ¨
+    auto found = user.find("address");
+    if (found) {
+        std::cout << "address å­—æ®µå­˜åœ¨\n";
+        std::cout << "åŸå¸‚: " << found->operator[]("city").as_string() << "\n";
     }
-    lazy::outl();
+    std::cout << "\n";
 
-    lazy::io::title("ÎÄ¼ş²Ù×÷ÑİÊ¾", '-', 50);
+    // ============================================================
+    // 4. éå†æ•°ç»„å’Œå¯¹è±¡
+    // ============================================================
+    std::cout << "4. éå†æ•°æ®:\n";
+
+    // éå†æˆç»©æ•°ç»„
+    std::cout << "æˆç»©åˆ—è¡¨: ";
+    for (const auto& score : user["scores"]) {
+        std::cout << score.as_int() << " ";
+    }
+    std::cout << "\n";
+
+    // éå†å¯¹è±¡çš„æ‰€æœ‰é”®å€¼å¯¹
+    std::cout << "ç”¨æˆ·ä¿¡æ¯:\n";
+    for (const auto& [key, value] : user.as_object()) {
+        std::cout << "  " << key << ": ";
+        if (value.is_string()) {
+            std::cout << value.as_string();
+        }
+        else if (value.is_number()) {
+            std::cout << value.as_number();
+        }
+        else if (value.is_bool()) {
+            std::cout << (value.as_bool() ? "true" : "false");
+        }
+        else if (value.is_array()) {
+            std::cout << "[æ•°ç»„, å¤§å°=" << value.size() << "]";
+        }
+        else if (value.is_object()) {
+            std::cout << "{å¯¹è±¡, å¤§å°=" << value.size() << "}";
+        }
+        else {
+            std::cout << "null";
+        }
+        std::cout << "\n";
+    }
+    std::cout << "\n";
+
+    // ============================================================
+    // 5. ä¿®æ”¹ JSON æ•°æ®
+    // ============================================================
+    std::cout << "5. ä¿®æ”¹æ•°æ®:\n";
+
+    user["age"] = 26;  // ä¿®æ”¹
+    user["scores"].push_back(88);  // æ·»åŠ 
+    user["email"] = "zhangsan@example.com";  // æ–°å¢
+
+    std::cout << user.dump(true) << "\n\n";
+
+    // ============================================================
+    // 6. è§£æ JSON å­—ç¬¦ä¸²
+    // ============================================================
+    std::cout << "6. è§£æ JSON å­—ç¬¦ä¸²:\n";
+
+    std::string json_str = R"({
+        "product": "æ‰‹æœº",
+        "price": 5999.99,
+        "specs": ["6.1è‹±å¯¸", "128GB", "åŒå¡"]
+    })";
+
+    Json product = Json::parse(json_str);
+    std::cout << "äº§å“: " << product["product"].as_string() << "\n";
+    std::cout << "ä»·æ ¼: " << product["price"].as_number() << "\n";
+    std::cout << "è§„æ ¼: " << product["specs"][0].as_string() << "\n\n";
+
+    // ============================================================
+    // 7. æ–‡ä»¶æ“ä½œ
+    // ============================================================
+    std::cout << "7. æ–‡ä»¶æ“ä½œ:\n";
+
+    // ä¿å­˜åˆ°æ–‡ä»¶
+    user.save("user_data.json", true);  // pretty = true, indent = 2
+    std::cout << "âˆš å·²ä¿å­˜åˆ° user_data.json\n";
+
+    // è¯»å–æ–‡ä»¶
+    if (JsonFile::file_exists("user_data.json")) {
+        Json loaded = Json::load("user_data.json");
+        std::cout << "âˆš ä»æ–‡ä»¶è¯»å–æˆåŠŸ\n";
+        std::cout << "å§“å: " << loaded["name"].as_string() << "\n";
+    }
+    std::cout << "\n";
+
+    // ============================================================
+    // 8. å®¹å™¨è½¬æ¢
+    // ============================================================
+    std::cout << "8. å®¹å™¨è½¬æ¢:\n";
+
+    // vector -> JSON
+    std::vector<int> numbers = { 10, 20, 30, 40, 50 };
+    Json num_array = vector_to_json(numbers);
+    std::cout << "æ•°ç»„è½¬JSON: " << num_array.dump() << "\n";
+
+    // JSON -> vector
+    std::vector<int> back = json_to_vector<int>(num_array);
+    std::cout << "JSONè½¬æ•°ç»„: ";
+    for (int n : back) {
+        std::cout << n << " ";
+    }
+    std::cout << "\n\n";
+
+    // ============================================================
+    // 9. ç´§å‡‘è¾“å‡º vs ç¾åŒ–è¾“å‡º
+    // ============================================================
+    std::cout << "9. è¾“å‡ºæ ¼å¼å¯¹æ¯”:\n";
+    std::cout << "ç¾åŒ–è¾“å‡º:\n" << user.dump(true) << "\n";
+    std::cout << "ç´§å‡‘è¾“å‡º:\n" << user.dump(false) << "\n\n";
+
+    // ============================================================
+    // 10. ä½¿ç”¨ JsonFile è¿›è¡Œæ›´å¤æ‚çš„æ–‡ä»¶æ“ä½œ
+    // ============================================================
+    std::cout << "10. æ–‡ä»¶è¿½åŠ æ“ä½œ:\n";
+
+    // è¿½åŠ åˆ° JSON å¯¹è±¡æ–‡ä»¶
+    JsonFile::append("config.json", "theme", Json("dark"));
+    JsonFile::append("config.json", "language", Json("zh-CN"));
+
+    // æ‰¹é‡è¿½åŠ 
+    std::map<std::string, Json> updates = {
+        {"notifications", Json(true)},
+        {"auto_save", Json(true)},
+        {"font_size", Json(14)}
+    };
+    JsonFile::append("config.json", updates);
+
+    // è¯»å–æŸ¥çœ‹
+    Json config = JsonFile::read("config.json");
+    std::cout << "é…ç½®æ–‡ä»¶å†…å®¹:\n" << config.dump(true) << "\n\n";
+
+    // ============================================================
+    // 11. å¼‚å¸¸å¤„ç†
+    // ============================================================
+    std::cout << "11. å¼‚å¸¸å¤„ç†:\n";
+
     try {
-        lazy::io::write_file("test.txt", "ÄãºÃ£¬Lazy ¿â£¡\nÕâÊÇÒ»¸ö²âÊÔÎÄ¼ş¡£");
-        auto content = lazy::io::read_file("test.txt");
-        lazy::io::log_success("ÎÄ¼şÄÚÈİ: ", content);
-
-        auto lines = lazy::io::read_lines("test.txt");
-        lazy::io::log_info("°´ĞĞ¶ÁÈ¡:");
-        for (const auto& line : lines) lazy::outl("  ", line);
+        // å°è¯•è§£ææ— æ•ˆ JSON
+        Json::parse("{invalid json}");
     }
-    catch (const std::exception& e) {
-        lazy::io::log_error("ÎÄ¼ş²Ù×÷´íÎó: ", e.what());
+    catch (const JsonException& e) {
+        std::cout << "æ•è·å¼‚å¸¸: " << e.what() << "\n";
     }
-    lazy::outl();
 
-    wait_for_enter();
+    try {
+        // å°è¯•è¯»å–ä¸å­˜åœ¨çš„æ–‡ä»¶
+        Json::load("non_existent_example.json");
+    }
+    catch (const JsonFileException& e) {
+        std::cout << "æ–‡ä»¶å¼‚å¸¸: " << e.what() << "\n";
+    }
 
-    // ============================================================
-    // 8. Ëæ»ú¹¦ÄÜ (lazy::random)
-    // ============================================================
-    clear_screen();
-    lazy::io::title("Ëæ»ú¹¦ÄÜÑİÊ¾", '=', 60);
-    lazy::outl();
-
-    lazy::io::log_info("Ëæ»úÊıÉú³É:");
-    lazy::outl("  rand_int(1, 100): ", lazy::random::rand_int(1, 100));
-    lazy::outl("  rand_ll(1e9, 1e10): ", lazy::random::rand_ll(1000000000LL, 10000000000LL));
-    lazy::outl("  rand_double(0, 1): ", lazy::random::rand_double(0.0, 1.0));
-    lazy::outl("  rand_uniform(): ", lazy::random::rand_uniform());
-    lazy::outl("  rand_normal(): ", lazy::random::rand_normal());
-    lazy::outl("  rand_bool(): ", lazy::random::rand_bool());
-    lazy::outl();
-
-    lazy::io::log_info("Ëæ»ú×Ö·û´®:");
-    lazy::outl("  rand_string(12): ", lazy::random::rand_string(12));
-    lazy::outl("  rand_digits(8): ", lazy::random::rand_digits(8));
-    lazy::outl("  rand_hex(16): ", lazy::random::rand_hex(16));
-    lazy::outl("  rand_lowercase(10): ", lazy::random::rand_lowercase(10));
-    lazy::outl("  rand_uppercase(10): ", lazy::random::rand_uppercase(10));
-    lazy::outl();
-
-    lazy::io::log_info("Ëæ»úÊı×é:");
-    auto rand_arr = lazy::random::rand_int_array(10, 1, 100);
-    lazy::outl("  rand_int_array(10): ");
-    for (auto x : rand_arr) lazy::out(x, " ");
-    lazy::outl();
-
-    lazy::io::log_info("Ëæ»ú²ÉÑù:");
-    std::vector<int> pop = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-    auto sample = lazy::random::sample(pop, 5);
-    lazy::outl("  sample(5) from {1..10}: ");
-    for (auto x : sample) lazy::out(x, " ");
-    lazy::outl();
-    lazy::outl();
-
-    wait_for_enter();
-
-    // ============================================================
-    // 9. ½á¹¹Ìå¹¦ÄÜ (lazy::structs)
-    // ============================================================
-    clear_screen();
-    lazy::io::title("½á¹¹Ìå¹¦ÄÜÑİÊ¾", '=', 60);
-    lazy::outl();
-
-    lazy::structs::RangeI range(1, 10);
-    lazy::io::log_info("Çø¼ä [1, 10]:");
-    lazy::outl("  contains(5): ", range.contains(5));
-    lazy::outl("  contains(15): ", range.contains(15));
-    lazy::outl("  ³¤¶È: ", range.length());
-    lazy::outl("  to_string: ", range.to_string());
-    lazy::outl();
-
-    lazy::structs::Point2Di p1(1, 2), p2(4, 6);
-    lazy::io::log_info("¶şÎ¬µã:");
-    lazy::outl("  p1 = ", p1.to_string(), ", p2 = ", p2.to_string());
-    lazy::outl("  p1 + p2 = ", (p1 + p2).to_string());
-    lazy::outl("  ¾àÀë = ", p1.distance_to(p2));
-    lazy::outl("  ¾àÀëÆ½·½ = ", p1.squared_distance(p2));
-    lazy::outl();
-
-    lazy::structs::RectI rect(0, 0, 10, 10);
-    lazy::structs::Point2Di point(5, 5);
-    lazy::io::log_info("¾ØĞÎ: ", rect.to_string());
-    lazy::outl("  contains(5,5): ", rect.contains(point));
-    lazy::outl("  Ãæ»ı: ", rect.area());
-    lazy::outl("  ÖĞĞÄ: (", rect.center_x(), ", ", rect.center_y(), ")");
-    lazy::outl();
-
-    lazy::structs::Version version1(1, 2, 3);
-    lazy::structs::Version version2(1, 2, 4);
-    lazy::io::log_info("°æ±¾ºÅ:");
-    lazy::outl("  version1 = ", version1.to_string());
-    lazy::outl("  version2 = ", version2.to_string());
-    lazy::outl("  version1 < version2: ", version1 < version2);
-    lazy::outl("  version1 == version2: ", version1 == version2);
-    lazy::outl("  ½âÎö '2.0.1-alpha+123': ", lazy::structs::Version::parse("2.0.1-alpha+123").to_string());
-    lazy::outl();
-
-    auto result_ok = lazy::structs::Result<int>::ok(42);
-    auto result_err = lazy::structs::Result<int>::err("³ö´íÁË");
-    lazy::io::log_info("Result ÀàĞÍ:");
-    lazy::outl("  is_ok: ", result_ok.is_ok(), ", value: ", result_ok.value());
-    lazy::outl("  is_err: ", result_err.is_err(), ", error: ", result_err.error());
-    auto mapped = result_ok.map([](int x) { return x * 2; });
-    lazy::outl("  map(*2): ", mapped.value());
-    lazy::outl();
-
-    auto root = std::make_shared<lazy::structs::TreeNode<std::string>>("¸ù½Úµã");
-    auto child1 = std::make_shared<lazy::structs::TreeNode<std::string>>("×Ó½Úµã1");
-    auto child2 = std::make_shared<lazy::structs::TreeNode<std::string>>("×Ó½Úµã2");
-    auto child1_1 = std::make_shared<lazy::structs::TreeNode<std::string>>("×Ó½Úµã1-1");
-
-    root->add_child(child1);
-    root->add_child(child2);
-    child1->add_child(child1_1);
-
-    lazy::io::log_info("Ê÷½á¹¹:");
-    root->print_pretty();
-    lazy::outl("  ½ÚµãÊı: ", root->node_count());
-    lazy::outl("  ¸ß¶È: ", root->height());
-    lazy::outl("  ÊÇ¸ù½Úµã: ", root->is_root());
-    lazy::outl("  ÊÇÒ¶½Úµã: ", root->is_leaf());
-    lazy::outl("  to_string: ", root->to_string());
-    lazy::outl("  ²éÕÒ '×Ó½Úµã1-1': ", root->find("×Ó½Úµã1-1") ? "ÕÒµ½" : "Î´ÕÒµ½");
-    lazy::outl();
-
-    lazy::structs::Edge<int> edge(1, 2);
-    lazy::structs::WeightedEdge<int> wedge(1, 2, 3.5);
-    lazy::io::log_info("±ß:");
-    lazy::outl("  ±ß: (", edge.from, " -> ", edge.to, ")");
-    lazy::outl("  ´øÈ¨±ß: (", wedge.from, " -> ", wedge.to, ", weight=", wedge.weight, ")");
-    lazy::outl();
-
-    lazy::structs::PageInfo page(2, 10, 95);
-    lazy::io::log_info("·ÖÒ³ĞÅÏ¢: ", page.to_string());
-    lazy::outl("  ×ÜÒ³Êı: ", page.total_pages());
-    lazy::outl("  Æ«ÒÆÁ¿: ", page.offset());
-    lazy::outl("  ÓĞÉÏÒ»Ò³: ", page.has_prev());
-    lazy::outl("  ÓĞÏÂÒ»Ò³: ", page.has_next());
-    lazy::outl();
-
-    lazy::structs::Error err(404, "Î´ÕÒµ½", "HTTP ´¦ÀíÆ÷");
-    err.details = "ÇëÇóµÄ×ÊÔ´²»´æÔÚ";
-    lazy::io::log_error("´íÎóĞÅÏ¢: ", err.to_string());
-    lazy::outl();
-
-    wait_for_enter();
-
-    // ============================================================
-    // 10. µ÷ÊÔ¹¦ÄÜ (lazy::debug)
-    // ============================================================
-    clear_screen();
-    lazy::io::title("µ÷ÊÔ¹¦ÄÜÑİÊ¾", '=', 60);
-    lazy::outl();
-
-    lazy::debug::log_info("ÕâÊÇÒ»Ìõµ÷ÊÔĞÅÏ¢ÈÕÖ¾");
-    lazy::debug::log_warning("ÕâÊÇÒ»Ìõµ÷ÊÔ¾¯¸æ", "¸½¼ÓÏêÇé");
-    lazy::debug::log_error("ÕâÊÇÒ»Ìõµ÷ÊÔ´íÎó", "´íÎóÏêÇé");
-
-    lazy::debug::enable_console_log();
-    lazy::debug::log_info("¿ØÖÆÌ¨ÈÕÖ¾ÒÑÆôÓÃ");
-
-    lazy::io::log_info("µ÷ÊÔÒÑ³õÊ¼»¯: ", lazy::debug::is_initialized());
-    lazy::outl();
-
-    wait_for_enter();
-
-    // ============================================================
-    // 11. ×ÛºÏÊ¾Àı
-    // ============================================================
-    clear_screen();
-    lazy::io::title("×ÛºÏÊ¾Àı", '=', 60);
-    lazy::outl();
-
-    lazy::io::log_info("Éú³ÉËæ»úÊı¾İ...");
-    std::vector<int> data = lazy::random::rand_int_array(20, 1, 100);
-    lazy::io::log_info("Ëæ»úÊı¾İ: ");
-    for (auto x : data) lazy::out(x, " ");
-    lazy::outl();
-
-    auto data_mean = lazy::algorithm::mean(data);
-    auto data_median = lazy::algorithm::median(data);
-    auto data_stddev = lazy::algorithm::stddev(data);
-    lazy::io::log_info("Í³¼ÆĞÅÏ¢:");
-    lazy::outl("  Æ½¾ùÖµ = ", data_mean);
-    lazy::outl("  ÖĞÎ»Êı = ", data_median);
-    lazy::outl("  ±ê×¼²î = ", data_stddev);
-
-    lazy::algorithm::quick_sort(data);
-    lazy::io::log_success("ÅÅĞòºóÊı¾İ: ");
-    for (auto x : data) lazy::out(x, " ");
-    lazy::outl();
-
-    int target = data[data.size() / 2];
-    lazy::io::log_info("Ä¿±êÖµ: ", target);
-    lazy::outl("  lower_bound: ", lazy::algorithm::lower_bound(data, target));
-    lazy::outl("  upper_bound: ", lazy::algorithm::upper_bound(data, target));
-
-    auto max_sum = lazy::algorithm::max_subarray_sum(data);
-    lazy::outl("  ×î´ó×ÓÊı×éºÍ = ", max_sum);
-
-    std::string data_str = lazy::container::to_string(data);
-    lazy::outl("  Êı¾İ×ª×Ö·û´®: ", data_str);
-    lazy::outl("  È¥³ı¿Õ¸ñºó: \"", lazy::string::trim("  " + data_str + "  "), "\"");
-
-    lazy::outl();
-    lazy::io::title("ÑİÊ¾Íê³É£¡", '=', 60);
-    lazy::io::log_success("LazyCpp ËùÓĞ¹¦ÄÜÒÑÑİÊ¾Íê±Ï£¡");
-    lazy::io::log_info("Çë¼ì²é crash.log ²é¿´µ÷ÊÔÊä³ö¡£");
-
-    // ×îºóµÈ´ı£¬ÈÃÓÃ»§¿´µ½½á¹û
-    lazy::outl();
-    lazy::io::log_info("°´ Enter ¼üÍË³ö...");
-    std::cin.get();
-
+    std::cout << "\n========== ç¤ºä¾‹ç»“æŸ ==========\n";
     return 0;
 }

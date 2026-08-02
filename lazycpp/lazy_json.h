@@ -1,4 +1,4 @@
-// lazy_json.h
+﻿// lazy_json.h
 // copyright 2026 lazycpp MIT License
 #define _CRT_SECURE_NO_WARNINGS
 #pragma once
@@ -19,6 +19,14 @@
 #include <any>
 #include <type_traits>
 
+#ifdef _WIN32
+#include <io.h>
+#include <sys/stat.h>
+#else
+#include <unistd.h>
+#include <sys/stat.h>
+#endif
+
 namespace lazy {
     namespace json {
 
@@ -26,6 +34,7 @@ namespace lazy {
         // 前向声明
         // ============================================================
         class Json;
+        class JsonFile;
 
         // ============================================================
         // JSON 值类型枚举
@@ -46,6 +55,29 @@ namespace lazy {
         public:
             explicit JsonException(const std::string& msg)
                 : std::runtime_error("[JSON] " + msg) {}
+        };
+        // ============================================================
+        // 文件 I/O 异常类
+        // ============================================================
+        class JsonFileException : public JsonException {
+        public:
+            explicit JsonFileException(const std::string& msg)
+                : JsonException("File IO: " + msg) {
+            }
+        };
+
+        // ============================================================
+        // 文件操作选项
+        // ============================================================
+        enum class FileMode {
+            Text,
+            Binary
+        };
+
+        struct FileOptions {
+            bool pretty = true;
+            int indent_spaces = 2;
+            FileMode mode = FileMode::Text;
         };
 
         // ============================================================
@@ -92,9 +124,9 @@ namespace lazy {
                     case '\r': oss << "\\r";  break;
                     case '\t': oss << "\\t";  break;
                     default:
-                        if (c < 32) {
+                        if (static_cast<unsigned char>(c) < 32) {
                             oss << "\\u" << std::hex << std::setw(4)
-                                << std::setfill('0') << (int)c;
+                                << std::setfill('0') << static_cast<int>(static_cast<unsigned char>(c));
                         }
                         else {
                             oss << c;
@@ -120,11 +152,10 @@ namespace lazy {
                         case 'r':  result += '\r'; break;
                         case 't':  result += '\t'; break;
                         case 'u': {
-                            // 简单 unicode 支持（只支持基本多语言平面）
                             if (i + 4 < s.length()) {
                                 std::string hex = s.substr(i + 1, 4);
                                 int code = std::stoi(hex, nullptr, 16);
-                                result += (char)code;
+                                result += static_cast<char>(code);
                                 i += 4;
                             }
                             break;
@@ -154,8 +185,7 @@ namespace lazy {
                 case JsonType::Number: {
                     double num = std::get<double>(value_);
                     if (std::floor(num) == num && !std::isinf(num) && !std::isnan(num)) {
-                        // 整数
-                        oss << (long long)num;
+                        oss << static_cast<long long>(num);
                     }
                     else {
                         oss << std::setprecision(16) << num;
@@ -180,6 +210,7 @@ namespace lazy {
                         oss << arr[i].serialize_impl(indent + spaces + 2, spaces, pretty);
                         if (i < arr.size() - 1) {
                             oss << ',';
+                            if (pretty) oss << ' ';
                         }
                         if (pretty) {
                             oss << '\n';
@@ -208,7 +239,13 @@ namespace lazy {
                         if (pretty) {
                             oss << std::string(indent + spaces + 2, ' ');
                         }
-                        oss << '"' << escape_string(key) << '"' << (pretty ? ": " : ":");
+                        oss << '"' << escape_string(key) << '"';
+                        if (pretty) {
+                            oss << ": ";
+                        }
+                        else {
+                            oss << ":";
+                        }
                         oss << val.serialize_impl(indent + spaces + 2, spaces, pretty);
                     }
                     if (pretty && !obj.empty()) {
@@ -229,7 +266,7 @@ namespace lazy {
                 size_t pos = 0;
 
                 void skip_whitespace() {
-                    while (pos < text.length() && std::isspace(text[pos])) {
+                    while (pos < text.length() && std::isspace(static_cast<unsigned char>(text[pos]))) {
                         pos++;
                     }
                 }
@@ -260,7 +297,7 @@ namespace lazy {
                     std::string result;
                     while (peek() != '"') {
                         if (peek() == '\\') {
-                            get(); // 跳过反斜杠
+                            get();
                             char c = get();
                             switch (c) {
                             case '"':  result += '"';  break;
@@ -272,13 +309,12 @@ namespace lazy {
                             case 'r':  result += '\r'; break;
                             case 't':  result += '\t'; break;
                             case 'u': {
-                                // 简单的 unicode 支持
                                 std::string hex;
                                 for (int i = 0; i < 4; i++) {
                                     hex += get();
                                 }
                                 int code = std::stoi(hex, nullptr, 16);
-                                result += (char)code;
+                                result += static_cast<char>(code);
                                 break;
                             }
                             default: result += c; break;
@@ -288,7 +324,7 @@ namespace lazy {
                             result += get();
                         }
                     }
-                    get(); // 消费结束引号
+                    get();
                     return result;
                 }
 
@@ -365,17 +401,17 @@ namespace lazy {
                         match('}');
                         return Json(obj);
                     }
-                    else if (c == '-' || std::isdigit(c)) {
+                    else if (c == '-' || std::isdigit(static_cast<unsigned char>(c))) {
                         std::string num_str;
                         if (c == '-') {
                             num_str += get();
                         }
-                        while (std::isdigit(peek())) {
+                        while (std::isdigit(static_cast<unsigned char>(peek()))) {
                             num_str += get();
                         }
                         if (peek() == '.') {
                             num_str += get();
-                            while (std::isdigit(peek())) {
+                            while (std::isdigit(static_cast<unsigned char>(peek()))) {
                                 num_str += get();
                             }
                         }
@@ -384,7 +420,7 @@ namespace lazy {
                             if (peek() == '+' || peek() == '-') {
                                 num_str += get();
                             }
-                            while (std::isdigit(peek())) {
+                            while (std::isdigit(static_cast<unsigned char>(peek()))) {
                                 num_str += get();
                             }
                         }
@@ -416,15 +452,6 @@ namespace lazy {
                 }
             };
 
-            // 辅助函数：从初始化列表构造对象
-            static Json from_initializer_list(std::initializer_list<std::pair<const std::string, Json>> init) {
-                std::map<std::string, Json> obj;
-                for (const auto& [key, val] : init) {
-                    obj[key] = val;
-                }
-                return Json(obj);
-            }
-
         public:
             // ============================================================
             // 构造函数
@@ -436,13 +463,13 @@ namespace lazy {
 
             Json(bool b) : value_(b), type_(JsonType::Bool) {}
 
-            Json(int n) : value_((double)n), type_(JsonType::Number) {}
-            Json(long n) : value_((double)n), type_(JsonType::Number) {}
-            Json(long long n) : value_((double)n), type_(JsonType::Number) {}
-            Json(unsigned int n) : value_((double)n), type_(JsonType::Number) {}
-            Json(unsigned long n) : value_((double)n), type_(JsonType::Number) {}
-            Json(unsigned long long n) : value_((double)n), type_(JsonType::Number) {}
-            Json(float n) : value_((double)n), type_(JsonType::Number) {}
+            Json(int n) : value_(static_cast<double>(n)), type_(JsonType::Number) {}
+            Json(long n) : value_(static_cast<double>(n)), type_(JsonType::Number) {}
+            Json(long long n) : value_(static_cast<double>(n)), type_(JsonType::Number) {}
+            Json(unsigned int n) : value_(static_cast<double>(n)), type_(JsonType::Number) {}
+            Json(unsigned long n) : value_(static_cast<double>(n)), type_(JsonType::Number) {}
+            Json(unsigned long long n) : value_(static_cast<double>(n)), type_(JsonType::Number) {}
+            Json(float n) : value_(static_cast<double>(n)), type_(JsonType::Number) {}
             Json(double n) : value_(n), type_(JsonType::Number) {}
 
             Json(const char* s) : value_(std::string(s)), type_(JsonType::String) {}
@@ -455,13 +482,11 @@ namespace lazy {
             Json(const std::map<std::string, Json>& obj) : value_(obj), type_(JsonType::Object) {}
             Json(std::map<std::string, Json>&& obj) : value_(std::move(obj)), type_(JsonType::Object) {}
 
-            // 方便构造：列表初始化（对象）
             Json(std::initializer_list<std::pair<const std::string, Json>> init)
                 : value_(std::map<std::string, Json>(init.begin(), init.end())),
                 type_(JsonType::Object) {
             }
 
-            // 复制和移动
             Json(const Json& other) = default;
             Json(Json&& other) noexcept = default;
             Json& operator=(const Json& other) = default;
@@ -505,11 +530,11 @@ namespace lazy {
             }
 
             int as_int() const {
-                return (int)as_number();
+                return static_cast<int>(as_number());
             }
 
             long long as_int64() const {
-                return (long long)as_number();
+                return static_cast<long long>(as_number());
             }
 
             std::string as_string() const {
@@ -550,7 +575,7 @@ namespace lazy {
             }
 
             // ============================================================
-            // 对象访问（类似 Python dict）
+            // 对象访问
             // ============================================================
 
             Json& operator[](const std::string& key) {
@@ -572,7 +597,6 @@ namespace lazy {
                 return it->second;
             }
 
-            // 数组索引访问
             Json& operator[](size_t index) {
                 if (!is_array()) {
                     throw JsonException("Not an array");
@@ -593,6 +617,18 @@ namespace lazy {
                     throw JsonException("Index out of range: " + std::to_string(index));
                 }
                 return arr[index];
+            }
+
+            std::optional<Json> find(const std::string& key) const {
+                if (!is_object()) {
+                    return std::nullopt;
+                }
+                const auto& obj = std::get<std::map<std::string, Json>>(value_);
+                auto it = obj.find(key);
+                if (it == obj.end()) {
+                    return std::nullopt;
+                }
+                return it->second;
             }
 
             // ============================================================
@@ -662,12 +698,7 @@ namespace lazy {
             // ============================================================
 
             std::string dump(bool pretty = false, int spaces = 2) const {
-                if (pretty) {
-                    return serialize_impl(0, 0, true);
-                }
-                else {
-                    return serialize_impl(0, 0, false);
-                }
+                return serialize_impl(0, 0, pretty);
             }
 
             std::string stringify(bool pretty = false, int spaces = 2) const {
@@ -682,6 +713,17 @@ namespace lazy {
                 Parser parser;
                 return parser.parse(json_text);
             }
+
+            // ============================================================
+            // 文件 I/O（声明，实现在 JsonFile 中）
+            // ============================================================
+
+            void save(const std::string& filename, bool pretty = true, int indent = 2) const;
+            void save(const std::string& filename, const FileOptions& options) const;
+            static Json load(const std::string& filename);
+            static Json load(const std::string& filename, std::string& error_msg);
+            static Json load_or_create(const std::string& filename,
+                const Json& default_value = Json::object());
 
             // ============================================================
             // 类型转换辅助
@@ -719,7 +761,6 @@ namespace lazy {
             // 迭代器支持
             // ============================================================
 
-            // 对象迭代器
             auto begin() const {
                 if (!is_object()) {
                     throw JsonException("Not an object");
@@ -734,7 +775,6 @@ namespace lazy {
                 return std::get<std::map<std::string, Json>>(value_).end();
             }
 
-            // 数组迭代器
             auto begin() {
                 if (!is_array()) {
                     throw JsonException("Not an array");
@@ -749,7 +789,6 @@ namespace lazy {
                 return std::get<std::vector<Json>>(value_).end();
             }
 
-            // const 数组迭代器
             auto cbegin() const {
                 if (!is_array()) {
                     throw JsonException("Not an array");
@@ -788,21 +827,230 @@ namespace lazy {
         };
 
         // ============================================================
+        // JsonFile 类实现
+        // ============================================================
+        class JsonFile {
+        private:
+            JsonFile() = delete;
+
+            static std::string read_file_content(const std::string& filename) {
+#ifdef _WIN32
+                FILE* file = nullptr;
+                if (fopen_s(&file, filename.c_str(), "rb") != 0) {
+                    throw JsonFileException("Cannot open file: " + filename);
+                }
+#else
+                FILE* file = fopen(filename.c_str(), "rb");
+                if (!file) {
+                    throw JsonFileException("Cannot open file: " + filename);
+                }
+#endif
+
+                fseek(file, 0, SEEK_END);
+                long size = ftell(file);
+                fseek(file, 0, SEEK_SET);
+
+                if (size < 0) {
+                    fclose(file);
+                    throw JsonFileException("Cannot determine file size: " + filename);
+                }
+
+                std::string content;
+                content.resize(static_cast<size_t>(size));
+                size_t read_count = fread(&content[0], 1, static_cast<size_t>(size), file);
+                fclose(file);
+
+                if (read_count != static_cast<size_t>(size)) {
+                    throw JsonFileException("Read error: " + filename);
+                }
+
+                return content;
+            }
+
+            static void write_file_content(const std::string& filename,
+                const std::string& content) {
+#ifdef _WIN32
+                FILE* file = nullptr;
+                if (fopen_s(&file, filename.c_str(), "w") != 0) {
+                    throw JsonFileException("Cannot create file: " + filename);
+                }
+#else
+                FILE* file = fopen(filename.c_str(), "w");
+                if (!file) {
+                    throw JsonFileException("Cannot create file: " + filename);
+                }
+#endif
+
+                size_t written = fwrite(content.c_str(), 1, content.size(), file);
+                fclose(file);
+
+                if (written != content.size()) {
+                    throw JsonFileException("Write error: " + filename);
+                }
+            }
+
+        public:
+            static Json read(const std::string& filename) {
+                std::string content = read_file_content(filename);
+                return Json::parse(content);
+            }
+
+            static Json read(const std::string& filename, std::string& error_msg) {
+                try {
+                    std::string content = read_file_content(filename);
+                    return Json::parse(content);
+                }
+                catch (const std::exception& e) {
+                    error_msg = e.what();
+                    return Json();
+                }
+            }
+
+            static void write(const std::string& filename, const Json& json,
+                bool pretty = true, int indent = 2) {
+                std::string content = json.dump(pretty, indent);
+                write_file_content(filename, content);
+            }
+
+            static void write(const std::string& filename, const Json& json,
+                const FileOptions& options) {
+                std::string content = json.dump(options.pretty, options.indent_spaces);
+                write_file_content(filename, content);
+            }
+
+            static void append(const std::string& filename, const std::string& key,
+                const Json& value) {
+                Json root;
+                if (file_exists(filename)) {
+                    root = read(filename);
+                }
+                else {
+                    root = Json::object();
+                }
+
+                if (!root.is_object()) {
+                    throw JsonFileException("Cannot append to non-object JSON");
+                }
+
+                root[key] = value;
+                write(filename, root);
+            }
+
+            static void append(const std::string& filename,
+                const std::map<std::string, Json>& values) {
+                Json root;
+                if (file_exists(filename)) {
+                    root = read(filename);
+                }
+                else {
+                    root = Json::object();
+                }
+
+                if (!root.is_object()) {
+                    throw JsonFileException("Cannot append to non-object JSON");
+                }
+
+                for (const auto& [key, val] : values) {
+                    root[key] = val;
+                }
+
+                write(filename, root);
+            }
+
+            static void append_array(const std::string& filename, const Json& value) {
+                Json root;
+                if (file_exists(filename)) {
+                    root = read(filename);
+                }
+                else {
+                    root = Json::array();
+                }
+
+                if (!root.is_array()) {
+                    throw JsonFileException("Cannot append to non-array JSON");
+                }
+
+                root.push_back(value);
+                write(filename, root);
+            }
+
+            static bool file_exists(const std::string& filename) {
+#ifdef _WIN32
+                return _access(filename.c_str(), 0) == 0;
+#else
+                return access(filename.c_str(), F_OK) == 0;
+#endif
+            }
+
+            static size_t file_size(const std::string& filename) {
+#ifdef _WIN32
+                struct _stat st;
+                if (_stat(filename.c_str(), &st) == 0) {
+                    return static_cast<size_t>(st.st_size);
+                }
+#else
+                struct stat st;
+                if (stat(filename.c_str(), &st) == 0) {
+                    return static_cast<size_t>(st.st_size);
+                }
+#endif
+                return 0;
+            }
+
+            static Json read_or_default(const std::string& filename,
+                const Json& default_value = Json::object()) {
+                try {
+                    if (file_exists(filename)) {
+                        return read(filename);
+                    }
+                    write(filename, default_value);
+                    return default_value;
+                }
+                catch (const std::exception&) {
+                    return default_value;
+                }
+            }
+        };
+
+        // ============================================================
+        // Json 类的文件 I/O 方法实现
+        // ============================================================
+
+        inline void Json::save(const std::string& filename, bool pretty, int indent) const {
+            JsonFile::write(filename, *this, pretty, indent);
+        }
+
+        inline void Json::save(const std::string& filename, const FileOptions& options) const {
+            JsonFile::write(filename, *this, options);
+        }
+
+        inline Json Json::load(const std::string& filename) {
+            return JsonFile::read(filename);
+        }
+
+        inline Json Json::load(const std::string& filename, std::string& error_msg) {
+            return JsonFile::read(filename, error_msg);
+        }
+
+        inline Json Json::load_or_create(const std::string& filename,
+            const Json& default_value) {
+            return JsonFile::read_or_default(filename, default_value);
+        }
+
+        // ============================================================
         // 便捷函数
         // ============================================================
 
-        // 快速解析
         inline Json parse_json(const std::string& json_text) {
             return Json::parse(json_text);
         }
 
-        // 快速序列化
         inline std::string to_json(const Json& json, bool pretty = false) {
             return json.dump(pretty);
         }
 
         // ============================================================
-        // 类型转换辅助（从 JSON 到 C++ 类型）
+        // 类型转换辅助
         // ============================================================
 
         template<typename T>

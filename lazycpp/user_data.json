@@ -1,0 +1,17 @@
+{
+  "active": true,
+  "address": {
+    "city": "北京",
+    "district": "海淀"
+  },
+  "admin": null,
+  "age": 26,
+  "email": "zhangsan@example.com",
+  "name": "张三",
+  "scores": [
+    95, 
+    87, 
+    92, 
+    88
+  ]
+}

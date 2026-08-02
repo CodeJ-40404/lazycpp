@@ -1,4 +1,4 @@
-// lazy_io.h
+ï»¿// lazy_io.h
 // copyright 2026 ? lazycpp MIT License
 #define _CRT_SECURE_NO_WARNINGS
 #pragma once
@@ -21,7 +21,7 @@ namespace lazy {
     namespace io {
 
         // ============================================================
-        // ¿ìËÙ IO
+        // å¿«é€Ÿ IO
         // ============================================================
 
         inline void fast_io() {
@@ -31,10 +31,10 @@ namespace lazy {
         }
 
         // ============================================================
-        // ÎÄ¼ş¶ÁĞ´
+        // æ–‡ä»¶è¯»å†™
         // ============================================================
 
-        // ¶ÁÈ¡Õû¸öÎÄ¼şµ½×Ö·û´®
+        // è¯»å–æ•´ä¸ªæ–‡ä»¶åˆ°å­—ç¬¦ä¸²
         inline std::string read_file(const std::string& filename) {
             std::ifstream file(filename);
             if (!file.is_open()) {
@@ -45,7 +45,7 @@ namespace lazy {
             return oss.str();
         }
 
-        // ¶ÁÈ¡ÎÄ¼şËùÓĞĞĞ
+        // è¯»å–æ–‡ä»¶æ‰€æœ‰è¡Œ
         inline std::vector<std::string> read_lines(const std::string& filename) {
             std::ifstream file(filename);
             if (!file.is_open()) {
@@ -59,7 +59,7 @@ namespace lazy {
             return lines;
         }
 
-        // Ğ´ÈëÎÄ¼ş
+        // å†™å…¥æ–‡ä»¶
         inline void write_file(const std::string& filename, const std::string& content) {
             std::ofstream file(filename);
             if (!file.is_open()) {
@@ -68,7 +68,7 @@ namespace lazy {
             file << content;
         }
 
-        // ×·¼Óµ½ÎÄ¼ş
+        // è¿½åŠ åˆ°æ–‡ä»¶
         inline void append_file(const std::string& filename, const std::string& content) {
             std::ofstream file(filename, std::ios::app);
             if (!file.is_open()) {
@@ -78,10 +78,10 @@ namespace lazy {
         }
 
         // ============================================================
-        // ²ÊÉ«Êä³ö
+        // å½©è‰²è¾“å‡º
         // ============================================================
 
-        // ANSI ÑÕÉ«Âë£¨ÊÊÓÃÓÚ Linux/macOS£©
+        // ANSI é¢œè‰²ç ï¼ˆé€‚ç”¨äº Linux/macOSï¼‰
         namespace color {
             const std::string RESET = "\033[0m";
             const std::string BLACK = "\033[30m";
@@ -97,14 +97,14 @@ namespace lazy {
             const std::string UNDERLINE = "\033[4m";
         }
 
-        // Windows ¿ØÖÆÌ¨ÑÕÉ«
+        // Windows æ§åˆ¶å°é¢œè‰²
 #ifdef _WIN32
         inline void set_console_color(int color) {
             HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
             SetConsoleTextAttribute(h, color);
         }
 
-        // Windows ÑÕÉ«³£Á¿
+        // Windows é¢œè‰²å¸¸é‡
         enum ConsoleColor {
             BLACK = 0,
             DARK_BLUE = 1,
@@ -123,12 +123,12 @@ namespace lazy {
             WHITE = 15
         };
 
-        // ²ÊÉ«Êä³ö£¨Windows£©
+        // å½©è‰²è¾“å‡ºï¼ˆWindowsï¼‰
         template<typename... Args>
         void print_color(int color, Args&&... args) {
             set_console_color(color);
             ((std::cout << std::forward<Args>(args)), ...);
-            set_console_color(7); // ÖØÖÃÎª°×É«
+            set_console_color(7); // é‡ç½®ä¸ºç™½è‰²
         }
 
         template<typename... Args>
@@ -137,7 +137,7 @@ namespace lazy {
             std::cout << '\n';
         }
 #else
-    // ²ÊÉ«Êä³ö£¨Linux/macOS£©
+    // å½©è‰²è¾“å‡ºï¼ˆLinux/macOSï¼‰
         template<typename... Args>
         void print_color(const std::string& color_code, Args&&... args) {
             std::cout << color_code;
@@ -153,10 +153,10 @@ namespace lazy {
 #endif
 
         // ============================================================
-        // ¸ñÊ½»¯Êä³ö
+        // æ ¼å¼åŒ–è¾“å‡º
         // ============================================================
 
-        // ´øÑÕÉ«µÄÈÕÖ¾Êä³ö
+        // å¸¦é¢œè‰²çš„æ—¥å¿—è¾“å‡º
         template<typename... Args>
         void log_info(Args&&... args) {
 #ifdef _WIN32
@@ -194,7 +194,7 @@ namespace lazy {
         }
 
         // ============================================================
-        // ½ø¶ÈÌõ
+        // è¿›åº¦æ¡
         // ============================================================
 
         class ProgressBar {
@@ -236,7 +236,7 @@ namespace lazy {
         };
 
         // ============================================================
-        // ·Ö¸ôÏß
+        // åˆ†éš”çº¿
         // ============================================================
 
         inline void separator(char c = '-', int width = 80) {
@@ -251,7 +251,7 @@ namespace lazy {
         }
 
         // ============================================================
-        // °²È«ÊäÈë
+        // å®‰å…¨è¾“å…¥
         // ============================================================
 
         template<typename T>
