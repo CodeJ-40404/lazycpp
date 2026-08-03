@@ -55,43 +55,42 @@ namespace lazy {
         using str = std::string;
         using ll = long long;
         using ull = unsigned long long;
-        using cr = char;
         using db = double;
-        using ld = long double;
+        using ldb = long double;
 
-        using vi = std::vector<int>;
-        using vvi = std::vector<std::vector<int>>;
-        using vll = std::vector<long long>;
-        using vull = std::vector<unsigned long long>;
-        using vstr = std::vector<std::string>;
+        using vec_int = std::vector<int>;
+        using vec_vec_int = std::vector<std::vector<int>>;
+        using vec_ll = std::vector<long long>;
+        using vec_ull = std::vector<unsigned long long>;
+        using vec_str = std::vector<std::string>;
 
-        using pii = std::pair<int, int>;
-        using pll = std::pair<long long, long long>;
-        using pstr = std::pair<std::string, std::string>;
+        using pr_ii = std::pair<int, int>;
+        using pr_ll = std::pair<long long, long long>;
+        using pr_str = std::pair<std::string, std::string>;
 
-        using mii = std::map<int, int>;
-        using mll = std::map<long long, long long>;
-        using msi = std::map<std::string, int>;
+        using mp_ii = std::map<int, int>;
+        using mp_ll = std::map<long long, long long>;
+        using mp_si = std::map<std::string, int>;
 
-        using umii = std::unordered_map<int, int>;
-        using umll = std::unordered_map<long long, long long>;
-        using umsi = std::unordered_map<std::string, int>;
+        using ump_ii = std::unordered_map<int, int>;
+        using ump_ll = std::unordered_map<long long, long long>;
+        using ump_str_int = std::unordered_map<std::string, int>;
 
-        using si = std::set<int>;
-        using sll = std::set<long long>;
-        using sstr = std::set<std::string>;
+        using st_int = std::set<int>;
+        using st_ll = std::set<long long>;
+        using st_str = std::set<std::string>;
 
-        using usi = std::unordered_set<int>;
-        using usll = std::unordered_set<long long>;
-        using usstr = std::unordered_set<std::string>;
+        using ust_int = std::unordered_set<int>;
+        using ust_ll = std::unordered_set<long long>;
+        using ust_str = std::unordered_set<std::string>;
 
-        using qui = std::queue<int>;
-        using qul = std::queue<long long>;
-        using pqi = std::priority_queue<int>;
-        using pql = std::priority_queue<long long>;
+        using que_int = std::queue<int>;
+        using que_ll = std::queue<long long>;
+        using prique_int = std::priority_queue<int>;
+        using prique_ll = std::priority_queue<long long>;
 
-        using ti = std::tuple<int, int, int>;
-        using tll = std::tuple<long long, long long, long long>;
+        using tup_int = std::tuple<int, int, int>;
+        using tup_ll = std::tuple<long long, long long, long long>;
 
 #ifdef __GNUC__
         using i128 = __int128;
@@ -142,12 +141,6 @@ namespace lazy {
 #define rrep(i, n) for(int i = (n)-1; i >= 0; i--)
 #define each(x, arr) for(auto& x : arr)
 #define repeat(times) for(int _ = 0; _ < (times); _++)
-
-#define all(arr) (arr).begin(), (arr).end()
-#define rall(arr) (arr).rbegin(), (arr).rend()
-#define sz(arr) ((int)(arr).size())
-#define fi first
-#define se second
 
 // ============================================================
 // 计时器
